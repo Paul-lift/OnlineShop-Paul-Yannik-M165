@@ -1,5 +1,6 @@
 package ch.swisscom.shopbackend.database.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -10,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Document(collection = "products")
+@AllArgsConstructor
 public class Product {
 
     @Id
