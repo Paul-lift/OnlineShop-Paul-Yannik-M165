@@ -18,7 +18,6 @@ public class StatsService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    // 1. Umsatz pro Kategorie
     public List<Document> getRevenueByCategory() {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
@@ -31,7 +30,6 @@ public class StatsService {
         ).getMappedResults();
     }
 
-    // 2. Top-5 meistbestellte Produkte
     public List<Document> getTopProducts() {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
@@ -44,7 +42,6 @@ public class StatsService {
         ).getMappedResults();
     }
 
-    // 3. Durchschnittspreis pro Kategorie
     public List<Document> getAvgPriceByCategory() {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
@@ -54,7 +51,6 @@ public class StatsService {
         ).getMappedResults();
     }
 
-    // 4. Monatlicher Gesamtumsatz
     public List<Document> getRevenueByMonth() {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
@@ -69,7 +65,6 @@ public class StatsService {
         ).getMappedResults();
     }
 
-    // 5. Durchschnittlicher Bestellwert pro Kunde
     public List<Document> getAvgOrderValueByCustomer() {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
