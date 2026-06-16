@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.bson.Document;
+import org.springframework.data.mongodb.core.aggregation.ConvertOperators;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +22,13 @@ public class StatsService {
     public List<Document> getRevenueByCategory() {
         return mongoTemplate.aggregate(
                 Aggregation.newAggregation(
-                        Aggregation.lookup("products", "items.productId", "_id", "productData"),
                         Aggregation.unwind("items"),
+                        Aggregation.addFields()
+                                .addField("productObjectId")
+                                .withValue(ConvertOperators.ToObjectId.toObjectId("$items.productId"))
+                                .build(),
+                        Aggregation.lookup("products", "productObjectId", "_id", "productData"),
+                        Aggregation.unwind("productData"),
                         Aggregation.group("productData.category")
                                 .sum(ArithmeticOperators.Multiply.valueOf("items.unitPrice")
                                         .multiplyBy("items.quantity")).as("totalRevenue")
