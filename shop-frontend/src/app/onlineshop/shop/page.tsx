@@ -1,37 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import ProductCard from "../../components/ProductCard";
-import { getProducts, getProductsByCategory } from "../../lib/api";
-import type { Product } from "../../lib/mockData";
+import { useShop } from "../../lib/ShopProvider";
 import styles from "./shop.module.css";
 
 const categories = ["Alle", "Elektronik", "Kleidung", "Sport", "Haushalt"] as const;
+type Category = (typeof categories)[number];
 
 export default function ShopPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Alle");
-  const [loading, setLoading] = useState(true);
+  const { products, loading, loadProducts, addToCart } = useShop();
+  const [activeCategory, setActiveCategory] = useState<Category>("Alle");
 
   useEffect(() => {
-    void loadProducts("Alle");
-  }, []);
+    void loadProducts();
+  }, [loadProducts]);
 
-  async function loadProducts(category: (typeof categories)[number]) {
-    setLoading(true);
+  async function handleCategoryChange(category: Category) {
     setActiveCategory(category);
-
-    try {
-      const data = category === "Alle" ? await getProducts() : await getProductsByCategory(category);
-      setProducts(data);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function handleAddToCart(product: Product) {
-    console.log(product);
+    await loadProducts(category);
   }
 
   return (
@@ -41,44 +28,35 @@ export default function ShopPage() {
           <p className={styles.kicker}>Online Shop</p>
           <h1 className={styles.title}>Produkte entdecken</h1>
           <p className={styles.subtitle}>
-            Wähle eine Kategorie und stöbere durch die verfügbaren Produkte aus der Mock-Datenquelle.
+            Wähle eine Kategorie und stöbere durch die verfügbaren Produkte.
           </p>
         </div>
 
         <section className={styles.filters}>
-          {categories.map((category) => {
-            const isActive = activeCategory === category;
-
-            return (
-              <button
-                key={category}
-                type="button"
-                onClick={() => void loadProducts(category)}
-                className={`${styles.filterButton} ${isActive ? styles.filterButtonActive : ""}`}
-              >
-                {category}
-              </button>
-            );
-          })}
+          {categories.map((category) => (
+            <button
+              key={category}
+              type="button"
+              onClick={() => void handleCategoryChange(category)}
+              className={`${styles.filterButton} ${activeCategory === category ? styles.filterButtonActive : ""}`}
+            >
+              {category}
+            </button>
+          ))}
         </section>
 
         {loading ? (
-          <div className={styles.messageBox}>
-            Produkte werden geladen...
-          </div>
+          <div className={styles.messageBox}>Produkte werden geladen...</div>
         ) : products.length === 0 ? (
-          <div className={styles.messageBox}>
-            Keine Produkte gefunden.
-          </div>
+          <div className={styles.messageBox}>Keine Produkte gefunden.</div>
         ) : (
           <>
             <div className={styles.resultInfo}>
               {products.length} Produkt{products.length === 1 ? "" : "e"} gefunden
             </div>
-
             <div className={styles.grid}>
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
+                <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
               ))}
             </div>
           </>

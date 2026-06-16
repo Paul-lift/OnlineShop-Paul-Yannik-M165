@@ -1,4 +1,4 @@
-import type { Product } from "../lib/mockData";
+import type { Product } from "../lib/types";
 import styles from "./ProductCard.module.css";
 
 type ProductCardProps = {
