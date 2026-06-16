@@ -2,38 +2,41 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useShop } from "../../lib/ShopProvider";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { login } = useShop();
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    login(name.trim());
     router.push("/onlineshop/shop");
   }
 
   return (
     <main className={styles.page}>
       <div className={styles.card}>
-        <p className={styles.kicker}>Online Shop</p>
         <h1 className={styles.title}>Anmelden</h1>
-        <p className={styles.subtitle}>Melde dich an, um fortzufahren.</p>
+        <p className={styles.subtitle}>Melde dich an, um Bestellungen aufzugeben.</p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label htmlFor="email" className={styles.label}>
-              E-Mail
+            <label htmlFor="name" className={styles.label}>
+              Name
             </label>
             <input
-              id="email"
-              type="email"
+              id="name"
+              type="text"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className={styles.input}
-              placeholder="name@beispiel.ch"
+              placeholder="Max Mustermann"
+              autoComplete="name"
             />
           </div>
 
@@ -49,6 +52,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               className={styles.input}
               placeholder="••••••••"
+              autoComplete="current-password"
             />
           </div>
 

@@ -27,12 +27,8 @@ export default function ShopPage() {
   return (
     <main className={styles.page}>
       <div className={styles.container}>
-        <div className={styles.hero}>
-          <p className={styles.kicker}>Online Shop</p>
-          <h1 className={styles.title}>Produkte entdecken</h1>
-          <p className={styles.subtitle}>
-            Wähle eine Kategorie und stöbere durch die verfügbaren Produkte.
-          </p>
+        <div className={styles.pageHeader}>
+          <h1 className={styles.pageTitle}>Produkte</h1>
         </div>
 
         <section className={styles.filters}>
@@ -49,14 +45,14 @@ export default function ShopPage() {
         </section>
 
         {loading ? (
-          <div className={styles.messageBox}>Produkte werden geladen...</div>
+          <div className={styles.messageBox}>Lädt…</div>
         ) : products.length === 0 ? (
           <div className={styles.messageBox}>Keine Produkte gefunden.</div>
         ) : (
           <>
-            <div className={styles.resultInfo}>
-              {products.length} Produkt{products.length === 1 ? "" : "e"} gefunden
-            </div>
+            <p className={styles.resultInfo}>
+              {products.length} Produkt{products.length === 1 ? "" : "e"}
+            </p>
             <div className={styles.grid}>
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
