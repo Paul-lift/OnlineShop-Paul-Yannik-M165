@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./login.module.css";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    alert(`Login als ${email} (Demo — kein echtes Auth)`);
+    router.push("/onlineshop/shop");
   }
 
   return (

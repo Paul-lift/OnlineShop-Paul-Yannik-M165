@@ -1,10 +1,8 @@
-import type { Product } from "../lib/types";
-import styles from "./ProductCard.module.css";
+"use client";
 
-type ProductCardProps = {
-  product: Product;
-  onAddToCart: (product: Product) => void;
-};
+import type { Product } from "../lib/types";
+import { useShop } from "../lib/ShopProvider";
+import styles from "./ProductCard.module.css";
 
 const priceFormatter = new Intl.NumberFormat("de-CH", {
   style: "currency",
@@ -13,7 +11,9 @@ const priceFormatter = new Intl.NumberFormat("de-CH", {
   maximumFractionDigits: 2,
 });
 
-export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export default function ProductCard({ product }: { product: Product }) {
+  const { addToCart } = useShop();
+
   return (
     <article className={styles.card}>
       <div className={styles.topRow}>
@@ -45,7 +45,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
       <button
         type="button"
-        onClick={() => onAddToCart(product)}
+        onClick={() => addToCart(product)}
         className={styles.button}
       >
         In den Warenkorb

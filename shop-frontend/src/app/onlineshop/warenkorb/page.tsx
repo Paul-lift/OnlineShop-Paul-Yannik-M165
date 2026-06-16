@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useShop } from "../../lib/ShopProvider";
 import styles from "./warenkorb.module.css";
 
@@ -12,6 +13,7 @@ const priceFormatter = new Intl.NumberFormat("de-CH", {
 });
 
 export default function WarenkorbPage() {
+  const router = useRouter();
   const { cart, removeFromCart, checkout } = useShop();
   const [customerName, setCustomerName] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -31,6 +33,7 @@ export default function WarenkorbPage() {
       await checkout(customerName.trim());
       setSuccessMsg("Bestellung erfolgreich aufgegeben!");
       setCustomerName("");
+      router.push("/onlineshop/shop");
     } catch {
       setErrorMsg("Fehler beim Bestellen. Bitte versuche es erneut.");
     } finally {

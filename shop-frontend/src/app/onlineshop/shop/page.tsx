@@ -2,21 +2,24 @@
 
 import { useEffect, useState } from "react";
 import ProductCard from "../../components/ProductCard";
+import { getProducts } from "../../lib/api";
 import { useShop } from "../../lib/ShopProvider";
 import styles from "./shop.module.css";
 
-const categories = ["Alle", "Elektronik", "Kleidung", "Sport", "Haushalt"] as const;
-type Category = (typeof categories)[number];
-
 export default function ShopPage() {
-  const { products, loading, loadProducts, addToCart } = useShop();
-  const [activeCategory, setActiveCategory] = useState<Category>("Alle");
+  const { products, loading, loadProducts } = useShop();
+  const [allCategories, setAllCategories] = useState<string[]>(["Alle"]);
+  const [activeCategory, setActiveCategory] = useState("Alle");
 
   useEffect(() => {
+    void getProducts().then((all) => {
+      const unique = Array.from(new Set(all.map((p) => p.category))).sort();
+      setAllCategories(["Alle", ...unique]);
+    });
     void loadProducts();
   }, [loadProducts]);
 
-  async function handleCategoryChange(category: Category) {
+  async function handleCategoryChange(category: string) {
     setActiveCategory(category);
     await loadProducts(category);
   }
@@ -33,7 +36,7 @@ export default function ShopPage() {
         </div>
 
         <section className={styles.filters}>
-          {categories.map((category) => (
+          {allCategories.map((category) => (
             <button
               key={category}
               type="button"
@@ -56,7 +59,7 @@ export default function ShopPage() {
             </div>
             <div className={styles.grid}>
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
+                <ProductCard key={product.id} product={product} />
               ))}
             </div>
           </>
