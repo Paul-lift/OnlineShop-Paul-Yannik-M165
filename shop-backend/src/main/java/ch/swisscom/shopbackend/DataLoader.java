@@ -24,10 +24,8 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // Nur laden wenn DB leer ist
         if (productRepository.count() > 0) return;
 
-        // Produkte
         Product p1 = new Product(null, "iPhone 15", 999.90, "Elektronik", 50, List.of("apple", "smartphone"));
         Product p2 = new Product(null, "Samsung TV", 799.90, "Elektronik", 20, List.of("samsung", "tv"));
         Product p3 = new Product(null, "Nike Schuhe", 129.90, "Kleidung", 100, List.of("nike", "schuhe"));
@@ -36,7 +34,6 @@ public class DataLoader implements CommandLineRunner {
 
         List<Product> savedProducts = productRepository.saveAll(List.of(p1, p2, p3, p4, p5));
 
-        // Orders
         Order o1 = new Order();
         o1.setCustomerName("Paul");
         o1.setOrderDate(LocalDate.of(2026, 1, 15));
