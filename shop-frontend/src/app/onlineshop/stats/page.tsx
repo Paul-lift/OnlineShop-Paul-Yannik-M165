@@ -17,8 +17,19 @@ const priceFormatter = new Intl.NumberFormat("de-CH", {
   maximumFractionDigits: 2,
 });
 
-function formatCell(value: unknown): string {
-  if (typeof value === "number") return priceFormatter.format(value);
+const numberFormatter = new Intl.NumberFormat("de-CH");
+
+function isCurrencyKey(key?: string): boolean {
+  if (!key) return true;
+  return /(price|preis|revenue|umsatz|value|wert|total(?!quantity))/i.test(key);
+}
+
+function formatCell(value: unknown, key?: string): string {
+  if (typeof value === "number") {
+    return isCurrencyKey(key)
+      ? priceFormatter.format(value)
+      : numberFormatter.format(value);
+  }
   if (typeof value === "string") return value;
   return JSON.stringify(value);
 }
@@ -48,7 +59,7 @@ function StatBlock({ data }: { data: unknown }) {
           {(data as Record<string, unknown>[]).map((row, i) => (
             <tr key={i}>
               {keys.map((k) => (
-                <td key={k}>{formatCell(row[k])}</td>
+                <td key={k}>{formatCell(row[k], k)}</td>
               ))}
             </tr>
           ))}
@@ -59,7 +70,8 @@ function StatBlock({ data }: { data: unknown }) {
 
   if (typeof data === "object" && data !== null) {
     const entries = Object.entries(data as Record<string, unknown>);
-    if (entries.length === 0) return <p className={styles.empty}>Keine Daten</p>;
+    if (entries.length === 0)
+      return <p className={styles.empty}>Keine Daten</p>;
     return (
       <table className={styles.table}>
         <thead>
@@ -91,11 +103,21 @@ export default function StatsPage() {
   const [avgOrderValue, setAvgOrderValue] = useState<unknown>(null);
 
   useEffect(() => {
-    void getTopProducts().then(setTopProducts).catch(() => setTopProducts([]));
-    void getAvgPriceByCategory().then(setAvgPriceByCategory).catch(() => setAvgPriceByCategory({}));
-    void getRevenueByCategory().then(setRevenueByCategory).catch(() => setRevenueByCategory({}));
-    void getRevenueByMonth().then(setRevenueByMonth).catch(() => setRevenueByMonth([]));
-    void getAvgOrderValue().then(setAvgOrderValue).catch(() => setAvgOrderValue(0));
+    void getTopProducts()
+      .then(setTopProducts)
+      .catch(() => setTopProducts([]));
+    void getAvgPriceByCategory()
+      .then(setAvgPriceByCategory)
+      .catch(() => setAvgPriceByCategory({}));
+    void getRevenueByCategory()
+      .then(setRevenueByCategory)
+      .catch(() => setRevenueByCategory({}));
+    void getRevenueByMonth()
+      .then(setRevenueByMonth)
+      .catch(() => setRevenueByMonth([]));
+    void getAvgOrderValue()
+      .then(setAvgOrderValue)
+      .catch(() => setAvgOrderValue(0));
   }, []);
 
   return (
