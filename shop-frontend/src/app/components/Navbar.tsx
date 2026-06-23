@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useShop } from "../lib/ShopProvider";
@@ -14,7 +15,13 @@ export default function Navbar() {
     <nav className={styles.nav}>
       <div className={styles.inner}>
         <Link href="/onlineshop/shop" className={styles.logo}>
-          <span className={styles.logoAccent}>M</span>165 Shop
+          <Image
+            src="/image.png"
+            alt="Shop Logo"
+            width={300}
+            height={200}
+            style={{ width: "auto", height: "130px" }}
+          />
         </Link>
 
         <div className={styles.links}>
@@ -34,7 +41,11 @@ export default function Navbar() {
           {customerName ? (
             <>
               <span className={styles.greeting}>Hallo, {customerName}</span>
-              <button type="button" onClick={logout} className={styles.logoutBtn}>
+              <button
+                type="button"
+                onClick={logout}
+                className={styles.logoutBtn}
+              >
                 Abmelden
               </button>
             </>
@@ -51,8 +62,18 @@ export default function Navbar() {
             href="/onlineshop/warenkorb"
             className={`${styles.cartLink} ${pathname === "/onlineshop/warenkorb" ? styles.cartLinkActive : ""}`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
             </svg>
             Warenkorb
